@@ -14,11 +14,10 @@
 
             <!-- CROSS Site Request Forgery Protection -->
             @csrf
-            {{-- @method=post --}}
 
             <div class="form-group">
                 <label>Title</label>
-                <input type="text" class="form-control" name="name" id="name">
+                <input type="text" class="form-control" name="title" id="title">
 
                 <!-- Error -->
                 @if ($errors->has('title'))
@@ -30,7 +29,7 @@
 
             <div class="form-group">
                 <label>Description</label>
-                <textarea class="form-control" name="message" id="message" rows="4"></textarea>
+                <textarea class="form-control" name="description" id="description" rows="4"></textarea>
 
                 <!-- Error -->
                 @if ($errors->has('description'))

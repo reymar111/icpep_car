@@ -11,58 +11,41 @@ class PostController extends Controller
     public function index()
     {
 
-        $posts = Post::all();
+        $posts = Post::latest()->get();
 
-        return view('posts.index')->with(compact('posts'));
-
-    }
-
-    public function create()
-    {
-
-
-
+        // integrate vue
+        return response()->json(['posts' => $posts]);
     }
 
     public function store(Request $request)
     {
 
         // Form validation
-        $this->validate($request, [
+        $request->validate([
             'title' => 'required',
             'description' => 'required'
-         ]);
+        ]);
 
-         $post = new Post();
-         $post->title = $request->title;
-         $post->description = $request->description;
-         $post->save();
+        // save the data
+        Post::create($request->all());
 
-         dd($post);
-
-        //  return back()->with('success', 'Your post is saved');
-
-
-    }
-
-    public function show(Post $post)
-    {
-
-
+        // return redirect
+        return redirect()->route('all_posts')->with('success', 'Your post is saved');
 
     }
 
     public function update(Request $request, Post $post)
     {
 
-
-
+        $post->title = $request->title;
+        $post->description = $request->description;
+        $post->update();
     }
 
     public function destroy(Post $post)
     {
 
-
+        $post->delete();
 
     }
 }

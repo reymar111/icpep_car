@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Post;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
@@ -44,3 +45,10 @@ Route::get('profile', function() {
 
 // blade templates
 Route::resource('/posts', App\Http\Controllers\PostController::class);
+
+// integrating laravel and vue
+Route::get('all_posts', function() {
+    $posts = Post::latest()->paginate(5);
+
+    return view('posts.index')->with(compact('posts'));
+})->name('all_posts');
