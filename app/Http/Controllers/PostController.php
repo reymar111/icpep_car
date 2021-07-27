@@ -17,6 +17,15 @@ class PostController extends Controller
         return response()->json(['posts' => $posts]);
     }
 
+    public function allPosts()
+    {
+
+        $posts = Post::latest()->paginate(5);
+
+        return view('posts.index')->with(compact('posts'));
+
+    }
+
     public function store(Request $request)
     {
 

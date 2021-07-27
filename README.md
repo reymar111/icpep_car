@@ -1,4 +1,4 @@
-This app is for purposes of ICpEP CAR Demo/Presentation
+This app is for ICpEP CAR Demo/Presentation
 
 Installation:
 1. composer install

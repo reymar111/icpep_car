@@ -6,7 +6,7 @@
 
         <div class="card-body">
                 <div class="alert alert-success" v-if="success_alert">
-                    Your Post is updated
+                    Your post is saved
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="success_alert=false">
                         <span aria-hidden="true" style="font-size:20px">×</span>
                     </button>

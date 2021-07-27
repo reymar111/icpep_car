@@ -1,7 +1,7 @@
 <template>
 <div class="container">
     <div class="row justify-content-center">
-        <table-component :posts="posts"></table-component>
+        <table-component :posts="posts" @getPosts="getData"></table-component>
         <create-component @getPosts="getData"></create-component>
     </div>
 </div>

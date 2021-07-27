@@ -47,8 +47,4 @@ Route::get('profile', function() {
 Route::resource('/posts', App\Http\Controllers\PostController::class);
 
 // integrating laravel and vue
-Route::get('all_posts', function() {
-    $posts = Post::latest()->paginate(5);
-
-    return view('posts.index')->with(compact('posts'));
-})->name('all_posts');
+Route::get('all_posts',  [App\Http\Controllers\PostController::class, 'allPosts'])->name('all_posts');

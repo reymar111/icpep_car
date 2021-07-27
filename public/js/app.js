@@ -2058,9 +2058,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['posts'],
-  components: {},
   data: function data() {
     return {
       // editing form
@@ -2069,13 +2079,42 @@ __webpack_require__.r(__webpack_exports__);
         id: '',
         title: '',
         description: ''
+      },
+      alert: {
+        is_active: false,
+        message: '',
+        type: ''
       }
     };
   },
   mounted: function mounted() {},
   methods: {
-    update: function update() {},
-    "delete": function _delete() {},
+    update: function update() {
+      var _this = this;
+
+      axios.put('/posts/' + this.edit_form.id, this.edit_form).then(function (res) {
+        _this.alert.type = 'alert-success';
+        _this.alert.message = 'Your Post is updated';
+        _this.alert.is_active = true;
+
+        _this.$emit('getPosts');
+
+        _this.edit(null);
+      })["catch"](function (err) {});
+    },
+    destroy: function destroy(id) {
+      var _this2 = this;
+
+      axios["delete"]('/posts/' + id).then(function (res) {
+        _this2.alert.type = 'alert-danger';
+        _this2.alert.message = 'Your Post is deleted';
+        _this2.alert.is_active = true;
+
+        _this2.$emit('getPosts');
+
+        _this2.edit(null);
+      })["catch"](function (err) {});
+    },
     edit: function edit(id, title, description) {
       this.edit_form.id = id;
       this.edit_form.title = title;
@@ -37919,7 +37958,7 @@ var render = function() {
         _vm.success_alert
           ? _c("div", { staticClass: "alert alert-success" }, [
               _vm._v(
-                "\n                    Your Post is updated\n                    "
+                "\n                    Your post is saved\n                    "
               ),
               _c(
                 "button",
@@ -38055,7 +38094,10 @@ var render = function() {
       "div",
       { staticClass: "row justify-content-center" },
       [
-        _c("table-component", { attrs: { posts: _vm.posts } }),
+        _c("table-component", {
+          attrs: { posts: _vm.posts },
+          on: { getPosts: _vm.getData }
+        }),
         _vm._v(" "),
         _c("create-component", { on: { getPosts: _vm.getData } })
       ],
@@ -38091,6 +38133,42 @@ var render = function() {
       _c("div", { staticClass: "card-header" }, [_vm._v("Posts")]),
       _vm._v(" "),
       _c("div", { staticClass: "card-body" }, [
+        _vm.alert.is_active
+          ? _c("div", { staticClass: "alert", class: _vm.alert.type }, [
+              _vm._v(
+                "\n                " +
+                  _vm._s(_vm.alert.message) +
+                  "\n                "
+              ),
+              _c(
+                "button",
+                {
+                  staticClass: "close",
+                  attrs: {
+                    type: "button",
+                    "data-dismiss": "alert",
+                    "aria-label": "Close"
+                  },
+                  on: {
+                    click: function($event) {
+                      _vm.alert.is_active = false
+                    }
+                  }
+                },
+                [
+                  _c(
+                    "span",
+                    {
+                      staticStyle: { "font-size": "20px" },
+                      attrs: { "aria-hidden": "true" }
+                    },
+                    [_vm._v("×")]
+                  )
+                ]
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
         _c("table", { staticClass: "table" }, [
           _vm._m(0),
           _vm._v(" "),
@@ -38099,182 +38177,138 @@ var render = function() {
             _vm._l(_vm.posts, function(post, index) {
               return _c("tr", { key: index }, [
                 _c("td", [
-                  _c(
-                    "span",
-                    {
-                      directives: [
-                        {
-                          name: "show",
-                          rawName: "v-show",
-                          value: !_vm.editForm(post.id),
-                          expression: "!editForm(post.id)"
-                        }
-                      ]
-                    },
-                    [_vm._v(_vm._s(post.title))]
-                  ),
+                  !_vm.editForm(post.id)
+                    ? _c("span", [_vm._v(_vm._s(post.title))])
+                    : _vm._e(),
                   _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: _vm.editForm(post.id),
-                        expression: "editForm(post.id)"
-                      },
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.edit_form.title,
-                        expression: "edit_form.title"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: {
-                      type: "text",
-                      placeholder: post.title,
-                      name: "title",
-                      id: "title"
-                    },
-                    domProps: { value: _vm.edit_form.title },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
+                  _vm.editForm(post.id)
+                    ? _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.edit_form.title,
+                            expression: "edit_form.title"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          placeholder: post.title,
+                          name: "title",
+                          id: "title"
+                        },
+                        domProps: { value: _vm.edit_form.title },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.edit_form,
+                              "title",
+                              $event.target.value
+                            )
+                          }
                         }
-                        _vm.$set(_vm.edit_form, "title", $event.target.value)
-                      }
-                    }
-                  })
+                      })
+                    : _vm._e()
                 ]),
                 _vm._v(" "),
                 _c("td", [
-                  _c(
-                    "span",
-                    {
-                      directives: [
-                        {
-                          name: "show",
-                          rawName: "v-show",
-                          value: !_vm.editForm(post.id),
-                          expression: "!editForm(post.id)"
-                        }
-                      ]
-                    },
-                    [_vm._v(_vm._s(post.description))]
-                  ),
+                  !_vm.editForm(post.id)
+                    ? _c("span", [_vm._v(_vm._s(post.description))])
+                    : _vm._e(),
                   _vm._v(" "),
-                  _c("textarea", {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: _vm.editForm(post.id),
-                        expression: "editForm(post.id)"
-                      },
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.edit_form.description,
-                        expression: "edit_form.description"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: {
-                      name: "description",
-                      id: "description",
-                      rows: "4"
-                    },
-                    domProps: { value: _vm.edit_form.description },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
+                  _vm.editForm(post.id)
+                    ? _c("textarea", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.edit_form.description,
+                            expression: "edit_form.description"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          name: "description",
+                          id: "description",
+                          rows: "4"
+                        },
+                        domProps: { value: _vm.edit_form.description },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.edit_form,
+                              "description",
+                              $event.target.value
+                            )
+                          }
                         }
-                        _vm.$set(
-                          _vm.edit_form,
-                          "description",
-                          $event.target.value
+                      })
+                    : _vm._e()
+                ]),
+                _vm._v(" "),
+                _c("td", [
+                  !_vm.editForm(post.id)
+                    ? _c("div", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success btn-sm",
+                            on: {
+                              click: function($event) {
+                                return _vm.edit(
+                                  post.id,
+                                  post.title,
+                                  post.description
+                                )
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-pen" })]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger btn-sm",
+                            on: {
+                              click: function($event) {
+                                return _vm.destroy(post.id)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-trash" })]
                         )
-                      }
-                    }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _c(
-                    "button",
-                    {
-                      directives: [
-                        {
-                          name: "show",
-                          rawName: "v-show",
-                          value: !_vm.editForm(post.id),
-                          expression: "!editForm(post.id)"
-                        }
-                      ],
-                      staticClass: "btn btn-success btn-sm",
-                      on: {
-                        click: function($event) {
-                          return _vm.edit(post.id, post.title, post.description)
-                        }
-                      }
-                    },
-                    [_c("i", { staticClass: "fas fa-pen" })]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      directives: [
-                        {
-                          name: "show",
-                          rawName: "v-show",
-                          value: !_vm.editForm(post.id),
-                          expression: "!editForm(post.id)"
-                        }
-                      ],
-                      staticClass: "btn btn-danger btn-sm"
-                    },
-                    [_c("i", { staticClass: "fas fa-trash" })]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      directives: [
-                        {
-                          name: "show",
-                          rawName: "v-show",
-                          value: _vm.editForm(post.id),
-                          expression: "editForm(post.id)"
-                        }
-                      ],
-                      staticClass: "btn btn-success btn-sm"
-                    },
-                    [_c("i", { staticClass: "fas fa-check" })]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      directives: [
-                        {
-                          name: "show",
-                          rawName: "v-show",
-                          value: _vm.editForm(post.id),
-                          expression: "editForm(post.id)"
-                        }
-                      ],
-                      staticClass: "btn btn-danger btn-sm",
-                      on: {
-                        click: function($event) {
-                          return _vm.edit(null)
-                        }
-                      }
-                    },
-                    [_c("i", { staticClass: "fas fa-times-circle" })]
-                  )
+                      ])
+                    : _c("div", [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success btn-sm",
+                            on: { click: _vm.update }
+                          },
+                          [_c("i", { staticClass: "fas fa-check" })]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger btn-sm",
+                            on: {
+                              click: function($event) {
+                                return _vm.edit(null)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-times-circle" })]
+                        )
+                      ])
                 ])
               ])
             }),
