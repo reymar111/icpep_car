@@ -48,3 +48,29 @@ Route::resource('/posts', App\Http\Controllers\PostController::class);
 
 // integrating laravel and vue
 Route::get('all_posts',  [App\Http\Controllers\PostController::class, 'allPosts'])->name('all_posts');
+
+
+// database ORM and Query Builder
+Route::get('mysql', function() {
+    Post::create([
+        'title' => 'this is the post made from ORM',
+        'description' => 'this is the description made from ORM'
+    ]);
+
+    // \DB::table('posts')->insert([
+    //     'title' => 'this is the post title',
+    //     'description' => 'this is the post description'
+    // ]);
+
+    return \DB::table('posts')->get();
+});
+
+// get all users
+Route::get('users', function() {
+    return \DB::table('users')->get();
+});
+
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
